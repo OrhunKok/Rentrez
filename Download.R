@@ -9,12 +9,17 @@ ncbi_ids = c("HQ433692.1","HQ433694.1","HQ433691.1")
 Bburg = entrez_fetch(db = "nuccore", id = ncbi_ids, rettype = "fasta")
 
 #Splitting the sequences into their own vectors
+Sequences = strsplit(Bburg,"\\n\\n")
 
-Bburg
+#Convert to dataframe and separating the headers
+Sequences = unlist(Sequences)
+header = gsub("(^>.*sequence)\\n[ATCG].*","\\1",Sequences)
+seq = gsub("^>.*sequence\\n([ATCG].*)","\\1",Sequences)
+Sequences = data.frame(Name=header,Sequence=seq)
 
-gsub("\\\n\n","cat(\n)",Bburg)
+# Removing newline characters
+Sequences[,2] = gsub("\\n", "", Sequences[,2])
 
-strsplit(Bburg,)
-
-?strsplit
+# Ouput to CSV File
+write.csv(Sequences,"Sequences.csv")
 
